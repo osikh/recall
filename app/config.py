@@ -1,12 +1,17 @@
 from functools import lru_cache
+from pathlib import Path
 from typing import Literal
 
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
+# Resolve .env relative to the project root (parent of this file's package dir),
+# regardless of the working directory uvicorn is launched from.
+_PROJECT_ROOT = Path(__file__).resolve().parent.parent
+
 
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(
-        env_file=".env",
+        env_file=str(_PROJECT_ROOT / ".env"),
         env_file_encoding="utf-8",
         extra="ignore",
     )
@@ -18,8 +23,9 @@ class Settings(BaseSettings):
     api_host: str = "0.0.0.0"
     api_port: int = 8000
 
-    database_url: str = "postgresql+psycopg://recall:recall@localhost:5432/recall"
+    database_url: str  # required — set DATABASE_URL in .env
     redis_url: str = "redis://localhost:6379/0"
+    uploads_dir: str = str(_PROJECT_ROOT / "uploads")
 
     llm_provider: Literal["anthropic", "openai"] = "anthropic"
     embedding_provider: Literal["openai", "anthropic"] = "openai"
