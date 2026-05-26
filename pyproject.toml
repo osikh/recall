@@ -1,0 +1,17 @@
+[project]
+name = "recall"
+version = "0.1.0"
+description = "A self-hostable cited Q&A API over your own documents."
+requires-python = ">=3.11"
+readme = "requirements.md"
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+asyncio_mode = "auto"
