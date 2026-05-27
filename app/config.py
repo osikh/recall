@@ -27,12 +27,20 @@ class Settings(BaseSettings):
     redis_url: str = "redis://localhost:6379/0"
     uploads_dir: str = str(_PROJECT_ROOT / "uploads")
 
-    llm_provider: Literal["anthropic", "openai"] = "anthropic"
-    embedding_provider: Literal["openai", "anthropic"] = "openai"
+    ai_provider: Literal["lmstudio", "openrouter"] = "lmstudio"
     vector_store: Literal["pgvector", "pinecone"] = "pgvector"
 
-    anthropic_api_key: str | None = None
-    openai_api_key: str | None = None
+    # LM Studio (local) — OpenAI-compatible
+    lmstudio_base_url: str = "http://localhost:1234/v1"
+    lmstudio_api_key: str = "lm-studio"
+    lmstudio_llm_model: str = "local-model"
+    lmstudio_embedding_model: str = "text-embedding-nomic-embed-text-v1.5"
+
+    # OpenRouter — OpenAI-compatible
+    openrouter_base_url: str = "https://openrouter.ai/api/v1"
+    openrouter_api_key: str | None = None
+    openrouter_llm_model: str = "mistralai/mistral-7b-instruct"
+    openrouter_embedding_model: str = "mistralai/mistral-embed"
 
     jwt_secret: str = "change-me"
     jwt_algorithm: str = "HS256"

@@ -1,7 +1,8 @@
 {
   "permissions": {
     "allow": [
-      "Bash(dir c:\\\\ai\\\\citedQA)"
+      "Bash(dir c:\\\\ai\\\\citedQA)",
+      "Bash(venv\\\\Scripts\\\\pip install *)"
     ]
   }
 }

@@ -29,3 +29,5 @@ uploads/
 data/
 *.db
 *.sqlite
+
+ui/node_modules/
