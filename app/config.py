@@ -2,10 +2,9 @@ from functools import lru_cache
 from pathlib import Path
 from typing import Literal
 
+from pydantic import field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
-# Resolve .env relative to the project root (parent of this file's package dir),
-# regardless of the working directory uvicorn is launched from.
 _PROJECT_ROOT = Path(__file__).resolve().parent.parent
 
 
@@ -16,35 +15,39 @@ class Settings(BaseSettings):
         extra="ignore",
     )
 
-    app_name: str = "Recall"
-    app_env: Literal["development", "staging", "production"] = "development"
-    log_level: str = "INFO"
+    app_name: str
+    app_env: Literal["development", "staging", "production"]
+    log_level: str
 
-    api_host: str = "0.0.0.0"
-    api_port: int = 8000
+    api_host: str
+    api_port: int
 
-    database_url: str  # required — set DATABASE_URL in .env
-    redis_url: str = "redis://localhost:6379/0"
-    uploads_dir: str = str(_PROJECT_ROOT / "uploads")
+    database_url: str
+    redis_url: str
+    uploads_dir: str
 
-    ai_provider: Literal["lmstudio", "openrouter"] = "lmstudio"
-    vector_store: Literal["pgvector", "pinecone"] = "pgvector"
+    @field_validator("uploads_dir")
+    @classmethod
+    def resolve_uploads_dir(cls, v: str) -> str:
+        p = Path(v)
+        return str(p if p.is_absolute() else _PROJECT_ROOT / p)
 
-    # LM Studio (local) — OpenAI-compatible
-    lmstudio_base_url: str = "http://localhost:1234/v1"
-    lmstudio_api_key: str = "lm-studio"
-    lmstudio_llm_model: str = "local-model"
-    lmstudio_embedding_model: str = "text-embedding-nomic-embed-text-v1.5"
+    ai_provider: Literal["lmstudio", "openrouter"]
+    vector_store: Literal["pgvector", "pinecone"]
 
-    # OpenRouter — OpenAI-compatible
-    openrouter_base_url: str = "https://openrouter.ai/api/v1"
-    openrouter_api_key: str | None = None
-    openrouter_llm_model: str = "mistralai/mistral-7b-instruct"
-    openrouter_embedding_model: str = "mistralai/mistral-embed"
+    lmstudio_base_url: str
+    lmstudio_api_key: str
+    lmstudio_llm_model: str
+    lmstudio_embedding_model: str
 
-    jwt_secret: str = "change-me"
-    jwt_algorithm: str = "HS256"
-    jwt_expires_minutes: int = 60
+    openrouter_base_url: str
+    openrouter_api_key: str
+    openrouter_llm_model: str
+    openrouter_embedding_model: str
+
+    jwt_secret: str
+    jwt_algorithm: str
+    jwt_expires_minutes: int
 
 
 @lru_cache
